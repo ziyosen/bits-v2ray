@@ -5,3 +5,10 @@ compatibility_date = "2024-01-01"
 kv_namespaces = [
   { binding = "settings", id = "63917c38e7c2494998bbfe51a97ba0a9" }
 ]
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true
+
+
+
