@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcryptjs'
 import { GenerateToken, Delay } from "./helpers"
 import { Env } from "./interfaces"
 
@@ -51,12 +50,14 @@ export async function PostLogin(request: Request, env: Env): Promise<Response> {
   const url: URL = new URL(request.url)
   const formData = await request.formData()
   const password: string = formData.get("password") || ""
-  let hashedPassword: string = await env.settings.get("Password") || ""
-  await Delay(1000)
-  const match = await bcrypt.compare(password, hashedPassword)
-    
-  if (match) {
+  // Ambil password dari environment variable, fallback 'admin123'
+  const correctPassword = env.PASSWORD || "admin123"
+
+  await Delay(1000) // tetap ada delay untuk keamanan
+
+  if (password === correctPassword) {
     const token: string = GenerateToken(24)
+    // Simpan token ke KV (opsional, jika panel membutuhkan)
     await env.settings.put("Token", token)
     return Response.redirect(`${url.protocol}//${url.hostname}${url.port != "443" ? ":" + url.port : ""}/?token=${token}`, 302)
   }
